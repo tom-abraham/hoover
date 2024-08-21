@@ -7,8 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class HooverService {
@@ -52,13 +56,14 @@ public class HooverService {
             currentCoordinate = move(direction, currentCoordinate);
             traceSet.add(currentCoordinate);
         }
-        int patchCount = 0;
-        for (int[] patch : patches) {
-            if(patch[0]>roomSize[0] || patch[1]>roomSize[1]){
+        int patchCount=0;
+        Set<Coordinate> set = Arrays.stream(patches).map(patch->new Coordinate(patch[0], patch[1])).collect(Collectors.toSet());
+        for (Coordinate patch :set) {
+            if(patch.getX()>roomSize[0] || patch.getY()>roomSize[1]){
                 Log.error("Patch is outside room with length: "+roomSize[0]+"and width: "+roomSize[1]);
                 continue;
             }
-            if (traceSet.contains(new Coordinate(patch[0], patch[1]))) {
+            if (traceSet.contains(patch)) {
                 patchCount++;
             }
         }

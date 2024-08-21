@@ -20,6 +20,7 @@
     3. The service url as "/hoover/clean" and port as 8080
     4. All exceptions logged using slf4j.
     5. starting point is also cleaned since hoover is always on.
+    6. Input array with 'patches' will be considered as distinct.
    
     b) Sample request with success case:
             curl --location 'http://localhost:8080/hoover/clean' \
@@ -84,3 +85,5 @@
     Response:
      Http response status: '500 INTERNAL_SERVER_ERROR'
      Response body with a specific error message.
+7. Memory usage:
+    Memory consumption per request is directly proportional to (number of instructions+number of patches)
