@@ -3,14 +3,17 @@ package com.robotics.hoover.service;
 import com.robotics.hoover.model.Coordinate;
 import com.robotics.hoover.model.HooverRequest;
 import com.robotics.hoover.model.HooverResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Set;
 @Service
 public class HooverService {
+    Logger Log= LoggerFactory.getLogger(this.getClass());
     public HooverResponse clean(HooverRequest hooverRequest){
         if(!validate(hooverRequest))
-            System.out.println("Input parameter not correct");;
+            Log.debug("Input parameter not correct ");
         int[] requestedCoordinates = hooverRequest.getCoords();
         int[] roomSize = hooverRequest.getRoomSize();
         int[][] patches = hooverRequest.getPatches();
@@ -61,7 +64,6 @@ public class HooverService {
         } else if (requestedCoordinates==null) {
             throw new IllegalArgumentException("Input parameter coords missing");
         }
-
         if(roomSize[0]<=0 ){
             throw new IllegalArgumentException("Room size should be more than 0");
         }
