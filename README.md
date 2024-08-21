@@ -15,8 +15,8 @@
 
 5. Hoover Service Details:
     a) Assumptions:
-    1. Hitting wall should send response '400 Bad Request' and  error message "robot has hit the top wall"
-    2. Room size can not be less than or equal to 0 and all given coordinates should be within room size.
+    1. When the hover hits the wall it remains there idle until it gets a proper instruction which can take it out from there.
+    2. Room size should be 0 to 10000 and instruction size is 0 to 4096 chars long to ensure service availability and avoid memory issues.
     3. The service url as "/hoover/clean" and port as 8080
     4. All exceptions logged using slf4j.
     5. starting point is also cleaned since hoover is always on.
@@ -48,25 +48,7 @@
 
 
 6. Handling error scenarios:
-    a) Hit the wall error:
-    Request:
-                curl --location 'http://localhost:8080/hoover/clean' \
-                --header 'Content-Type: application/json' \
-                --data '{
-                  "roomSize" : [4, 4],
-                  "coords" : [1, 2],
-                  "patches" : [
-                    [1, 0],
-                    [2, 2],
-                    [2, 3]
-                  ],
-                  "instructions" : "NNESEESWNWWNNESEESWNWW"
-                }'
-    Response:
-     Http response status: '400 Bad Request'
-     Response body with a specific error message "robot has hit the top wall"
-    
-    b) Input parameters missing:
+    a) Input parameters missing:
     Request:
                 curl --location 'http://localhost:8080/hoover/clean' \
                 --header 'Content-Type: application/json' \
@@ -83,7 +65,7 @@
      Http response status: '400 Bad Request'
      Response body with a specific error message "Input parameter instructions missing"
     
-    c) Room size should not be less than 0:
+    b) Room size should not be less than 0:
                 curl --location 'http://localhost:8080/hoover/clean' \
                 --header 'Content-Type: application/json' \
                 --data '{
@@ -100,7 +82,7 @@
      Http response status: '400 Bad Request'
      Response body with a specific error message "Room size should be more than 0"
     
-    d) Any other exception:
+    c) Any other exception:
     Response:
      Http response status: '500 INTERNAL_SERVER_ERROR'
      Response body with a specific error message.

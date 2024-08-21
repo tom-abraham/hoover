@@ -88,43 +88,35 @@ public class HooverServiceTests {
         assertEquals(new HooverResponse(new Coordinate(13, 11),5),service.clean(request));
     }
 
+    @Test
+    void testInstructionCaseInSensitiveH013() {
+        HooverRequest request=new HooverRequest(new int[]{16, 16},new int[]{13, 11},new int[][]{{13, 11},{12, 11},{13, 10},{13, 12},{14, 11}},"NSWESNEw");
+        assertEquals(new HooverResponse(new Coordinate(13, 11),5),service.clean(request));
+    }
+
 
     @Test
-    void testHitTheRightWallShouldThrowExceptionN001() {
-        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESEEEEEEEEEESWNWW");
-        try {
-            service.clean(request);
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("robot has hit the right wall"));
-        }
+    void testHitTheRightWallN001() {
+        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{5, 2}},"EEEEEEEEEEEEEEEEE");
+        assertEquals(new HooverResponse(new Coordinate(5, 2),2),service.clean(request));
     }
     @Test
-    void testHitTheLeftWallShouldThrowExceptionN002() {
-        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESEESWNWWWWWWWW");
-        try {
-            service.clean(request);
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("robot has hit the left wall"));
-        }
+    void testHitTheTopWallN002() {
+        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{5, 2},{1, 3}},"NNNNNNNNNNNNNNNN");
+        assertEquals(new HooverResponse(new Coordinate(1, 5),1),service.clean(request));
     }
     @Test
-    void testHitTheTopWallShouldThrowExceptionN003() {
-        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNNNNNNNNNESEESWNWW");
-        try {
-            service.clean(request);
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("robot has hit the top wall"));
-        }
+    void testHitTheBottomWallN003() {
+        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{5, 2}},"SSSSSSSSSSSSSSS");
+        assertEquals(new HooverResponse(new Coordinate(1, 0),1),service.clean(request));
     }
     @Test
-    void testHitTheBottomWallShouldThrowExceptionN004() {
-        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSSSSSSSSSSSSEESWNWW");
-        try {
-            service.clean(request);
-        } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("robot has hit the bottom wall"));
-        }
+    void testHitTheLeftWallN004() {
+        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{3, 2},new int[][]{{1, 0},{2, 2},{5, 2},{1,1}},"WWWWWWWWWWWWWWWW");
+        assertEquals(new HooverResponse(new Coordinate(0, 2),1),service.clean(request));
     }
+
+
     @Test
     void testRoomSizeZeroShouldThrowExceptionN005() {
         HooverRequest request=new HooverRequest(new int[]{0, 0},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSEESWNWW");
@@ -171,7 +163,14 @@ public class HooverServiceTests {
         try {
             service.clean(request);
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("Input parameter roomsize missing"));
+            assertThat(e.getMessage(), is("Input parameter room size missing"));
         }
     }
+
+    @Test
+    void testHitTheLeftWallTurnAndCleanN004() {
+        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{3, 2},new int[][]{{1, 2},{2, 2},{2, 4},{3,4},{3,5}},"WWWWWWWWWWWWWWWWNNEENE");
+        assertEquals(new HooverResponse(new Coordinate(3, 5),4),service.clean(request));
+    }
+
 }
