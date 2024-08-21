@@ -13,10 +13,10 @@ import java.util.Set;
 @Service
 public class HooverService {
     Logger Log = LoggerFactory.getLogger(this.getClass());
-    @Value("${max.room.size}")
-    public int ROOM_MAX_SIZE;
-    @Value("${min.room.size}")
-    public int ROOM_MIN_SIZE ;
+    public final int ROOM_MAX_LENGTH=10000;
+    public final int ROOM_MAX_WIDTH=10000;
+    public final int ROOM_MIN_LENGTH=0 ;
+    public final int ROOM_MIN_WIDTH=0 ;
 
     public HooverResponse clean(HooverRequest hooverRequest) {
         if (!validate(hooverRequest)) {
@@ -52,13 +52,17 @@ public class HooverService {
             currentCoordinate = move(direction, currentCoordinate);
             traceSet.add(currentCoordinate);
         }
-        int count = 0;
+        int patchCount = 0;
         for (int[] patch : patches) {
+            if(patch[0]>roomSize[0] || patch[1]>roomSize[1]){
+                Log.error("Patch is outside room with length: "+roomSize[0]+"and width: "+roomSize[1]);
+                continue;
+            }
             if (traceSet.contains(new Coordinate(patch[0], patch[1]))) {
-                count++;
+                patchCount++;
             }
         }
-        return new HooverResponse(currentCoordinate, count);
+        return new HooverResponse(currentCoordinate, patchCount);
     }
 
     private static Coordinate move(String s, Coordinate currentCoordinate) {
@@ -92,13 +96,13 @@ public class HooverService {
             retval=false;
             throw new IllegalArgumentException("Input parameter coords missing");
         }
-        if (roomSize[0] <= ROOM_MIN_SIZE) {
+        if (roomSize[0] <= ROOM_MIN_LENGTH || roomSize[1] <= ROOM_MIN_WIDTH ) {
             retval=false;
-            throw new IllegalArgumentException("Room size should be more than "+ROOM_MIN_SIZE);
+            throw new IllegalArgumentException("Room length should be more than "+ROOM_MIN_LENGTH+" or width: "+ROOM_MIN_WIDTH);
         }
-        if (roomSize[0] > ROOM_MAX_SIZE) {
+        if (roomSize[0] > ROOM_MAX_LENGTH || roomSize[1] > ROOM_MAX_WIDTH) {
             retval=false;
-            throw new IllegalArgumentException("Room size should be more than "+ROOM_MAX_SIZE);
+            throw new IllegalArgumentException("Room length should not be more than "+ROOM_MAX_LENGTH+" or width: "+ROOM_MAX_WIDTH);
         }
         if (roomSize[0] < requestedCoordinates[0] || roomSize[1] < requestedCoordinates[1] ) {
             retval=false;

@@ -94,41 +94,46 @@ public class HooverServiceTests {
         assertEquals(new HooverResponse(new Coordinate(13, 11),5),service.clean(request));
     }
 
+    @Test
+    void testPatchOutsideRoomH014() {
+        HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 12},{2, 3}},"NNESEESWNWW");
+        assertEquals(new HooverResponse(new Coordinate(1, 3),1),service.clean(request));
+    }
 
     @Test
-    void testHitTheRightWallN001() {
+    void testHitTheRightWallN01() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{5, 2}},"EEEEEEEEEEEEEEEEE");
         assertEquals(new HooverResponse(new Coordinate(5, 2),2),service.clean(request));
     }
     @Test
-    void testHitTheTopWallN002() {
+    void testHitTheTopWallN02() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{5, 2},{1, 3}},"NNNNNNNNNNNNNNNN");
         assertEquals(new HooverResponse(new Coordinate(1, 5),1),service.clean(request));
     }
     @Test
-    void testHitTheBottomWallN003() {
+    void testHitTheBottomWallN03() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{5, 2}},"SSSSSSSSSSSSSSS");
         assertEquals(new HooverResponse(new Coordinate(1, 0),1),service.clean(request));
     }
     @Test
-    void testHitTheLeftWallN004() {
+    void testHitTheLeftWallN04() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{3, 2},new int[][]{{1, 0},{2, 2},{5, 2},{1,1}},"WWWWWWWWWWWWWWWW");
         assertEquals(new HooverResponse(new Coordinate(0, 2),1),service.clean(request));
     }
 
 
     @Test
-    void testRoomSizeZeroShouldThrowExceptionN005() {
+    void testRoomSizeZeroShouldThrowExceptionN05() {
         HooverRequest request=new HooverRequest(new int[]{0, 0},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSEESWNWW");
         try {
             service.clean(request);
         } catch (IllegalArgumentException e) {
-            assertThat(e.getMessage(), is("Room size should be more than 0"));
+            assertThat(e.getMessage(), is("Room length should be more than 0 or width: 0"));
         }
     }
 
     @Test
-    void testInstructionsNullShouldThrowExceptionN006() {
+    void testInstructionsNullShouldThrowExceptionN06() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},null);
         try {
             service.clean(request);
@@ -138,7 +143,7 @@ public class HooverServiceTests {
     }
 
     @Test
-    void testPatchesNullShouldThrowExceptionN007() {
+    void testPatchesNullShouldThrowExceptionN07() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{1, 2},null,"NNESSEESWNWW");
         try {
             service.clean(request);
@@ -148,7 +153,7 @@ public class HooverServiceTests {
     }
 
     @Test
-    void testCoordsNullShouldThrowExceptionN008() {
+    void testCoordsNullShouldThrowExceptionN08() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},null,new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSEESWNWW");
         try {
             service.clean(request);
@@ -158,7 +163,7 @@ public class HooverServiceTests {
     }
 
     @Test
-    void testRoomSizeNullShouldThrowExceptionN009() {
+    void testRoomSizeNullShouldThrowExceptionN09() {
         HooverRequest request=new HooverRequest(null,new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSEESWNWW");
         try {
             service.clean(request);
@@ -168,9 +173,27 @@ public class HooverServiceTests {
     }
 
     @Test
-    void testHitTheLeftWallTurnAndCleanN004() {
+    void testHitTheLeftWallTurnAndCleanN010() {
         HooverRequest request=new HooverRequest(new int[]{5, 5},new int[]{3, 2},new int[][]{{1, 2},{2, 2},{2, 4},{3,4},{3,5}},"WWWWWWWWWWWWWWWWNNEENE");
         assertEquals(new HooverResponse(new Coordinate(3, 5),4),service.clean(request));
+    }
+    @Test
+    void testRoomWidthZeroShouldThrowExceptionN011() {
+        HooverRequest request=new HooverRequest(new int[]{0, 5},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSEESWNWW");
+        try {
+            service.clean(request);
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage(), is("Room length should be more than 0 or width: 0"));
+        }
+    }
+    @Test
+    void testRoomLengthZeroShouldThrowExceptionN012() {
+        HooverRequest request=new HooverRequest(new int[]{5, 0},new int[]{1, 2},new int[][]{{1, 0},{2, 2},{2, 3}},"NNESSEESWNWW");
+        try {
+            service.clean(request);
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage(), is("Room length should be more than 0 or width: 0"));
+        }
     }
 
 }

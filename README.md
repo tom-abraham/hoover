@@ -45,8 +45,6 @@
                          "patches": 1
                      }
 
-
-
 6. Handling error scenarios:
     a) Input parameters missing:
     Request:
@@ -64,7 +62,7 @@
     Response:
      Http response status: '400 Bad Request'
      Response body with a specific error message "Input parameter instructions missing"
-    
+    Note: patches which are outside room are logged as error.
     b) Room size should not be less than 0:
                 curl --location 'http://localhost:8080/hoover/clean' \
                 --header 'Content-Type: application/json' \
@@ -80,7 +78,7 @@
                 }'
     Response:
      Http response status: '400 Bad Request'
-     Response body with a specific error message "Room size should be more than 0"
+     Response body with a specific error message "Room length should be more than 0 or width: 0"
     
     c) Any other exception:
     Response:
