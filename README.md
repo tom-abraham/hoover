@@ -16,10 +16,11 @@
 5. Hoover Service Details:
     a) Assumptions:
     1. Hitting wall should send response '400 Bad Request' and  error message "robot has hit the top wall"
-    2. Room size can not be less than 0 and all given coordinates should be within room size.
+    2. Room size can not be less than or equal to 0 and all given coordinates should be within room size.
     3. The service url as "/hoover/clean" and port as 8080
     4. All exceptions logged using slf4j.
-
+    5. starting point is also cleaned since hoover is always on.
+   
     b) Sample request with success case:
             curl --location 'http://localhost:8080/hoover/clean' \
             --header 'Content-Type: application/json' \

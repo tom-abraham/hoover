@@ -18,8 +18,9 @@ public class HooverService {
         int[] roomSize = hooverRequest.getRoomSize();
         int[][] patches = hooverRequest.getPatches();
         String instructions = hooverRequest.getInstructions();
-        Coordinate currentCoordinate = new Coordinate(requestedCoordinates[0], requestedCoordinates[1]);
         Set<Coordinate> traceSet = new HashSet<>();
+        Coordinate currentCoordinate = new Coordinate(requestedCoordinates[0], requestedCoordinates[1]);
+        traceSet.add(currentCoordinate);//add starting point first to map
         String[] instructionsList = instructions.split("");
         for (String s : instructionsList) {
             currentCoordinate = switch (s) {
@@ -30,9 +31,9 @@ public class HooverService {
                 default -> currentCoordinate;
             };
             //hitting the wall
-            if (currentCoordinate.getX() >= roomSize[0]) {
+            if (currentCoordinate.getX() > roomSize[0]) {
                 throw new IllegalArgumentException("robot has hit the right wall");
-            } else if (currentCoordinate.getY() >= roomSize[1]) {
+            } else if (currentCoordinate.getY() > roomSize[1]) {
                 throw new IllegalArgumentException("robot has hit the top wall");
             } else if (currentCoordinate.getX() < 0) {
                 throw new IllegalArgumentException("robot has hit the left wall");
