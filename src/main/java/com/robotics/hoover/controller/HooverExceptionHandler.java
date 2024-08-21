@@ -15,4 +15,8 @@ public class HooverExceptionHandler {
     public ResponseEntity<String>  exceptionHandler(IllegalArgumentException e){
         return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+    @ExceptionHandler
+    public ResponseEntity<String>  exceptionHandler(Exception e){
+        return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
 }
